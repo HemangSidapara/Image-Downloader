@@ -21,7 +21,7 @@ class ProgressDialog {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(
-                color: AppColors.PRIMARY_COLOR,
+                color: AppColors.SUCCESS_COLOR,
               )
             ],
           ),

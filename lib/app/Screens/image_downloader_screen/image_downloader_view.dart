@@ -6,6 +6,8 @@ import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_downloader/app/Constants/app_color.dart';
+import 'package:image_downloader/app/Constants/app_images.dart';
+import 'package:image_downloader/app/Constants/app_strings.dart';
 import 'package:image_downloader/app/utils/app_formatter.dart';
 import 'package:image_downloader/app/utils/app_sizer.dart';
 
@@ -21,8 +23,9 @@ class _ImageDownloaderViewState extends State<ImageDownloaderView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Image.asset('assets/Icon-512.png'),
+        leading: Image.asset(Images.logoImage),
         leadingWidth: 20.w,
+        backgroundColor: AppColors.WHITE_COLOR,
         shape: const RoundedRectangleBorder(
           side: BorderSide(
             color: Colors.black54,
@@ -33,12 +36,22 @@ class _ImageDownloaderViewState extends State<ImageDownloaderView> {
             bottomRight: Radius.circular(20),
           ),
         ),
-        title: Text(
-          'Mindwave Infoway\'s Image Downloader',
-          style: TextStyle(
-            color: Colors.black54,
-            fontSize: 7.sp,
-            fontWeight: FontWeight.w700,
+        title: ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [
+              AppColors.PRIMARY_COLOR,
+              AppColors.SECONDARY_COLOR,
+            ],
+          ).createShader(
+            Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+          ),
+          child: Text(
+            AppStrings.mindwaveInfowaysImageDownloader,
+            style: TextStyle(
+              fontSize: 7.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         centerTitle: true,
@@ -51,11 +64,10 @@ class _ImageDownloaderViewState extends State<ImageDownloaderView> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                FilePickerResult? result = await FilePickerWeb.platform.pickFiles();
+                FilePickerResult? result = await FilePickerWeb.platform.pickFiles(type: FileType.custom, allowedExtensions: ['txt']);
 
                 if (result != null) {
                   Uint8List? txtFileBytes = result.files.single.bytes;
-
                   List<String> imageUrlList = LineSplitter.split(const Utf8Decoder().convert(txtFileBytes!)).toList();
                   final totalLoops = (imageUrlList.length / 10).floor();
                   final moduloUpper = (imageUrlList.length / 10).toString().split('.').last.toInt();
@@ -87,13 +99,23 @@ class _ImageDownloaderViewState extends State<ImageDownloaderView> {
                 surfaceTintColor: AppColors.WHITE_COLOR,
               ),
               child: Text(
-                '+ select urls file',
+                AppStrings.selectUrlsFile,
                 style: TextStyle(
                   fontSize: 5.sp,
                   fontWeight: FontWeight.w600,
                   color: Colors.blueGrey,
                 ),
               ),
+            ),
+          ),
+          SizedBox(height: 0.5.h),
+          Text(
+            AppStrings.onlyTXTFileAllowed,
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              color: Colors.redAccent,
+              fontSize: 3.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],
